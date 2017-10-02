@@ -1,6 +1,6 @@
 {
   "name": "ong-logger",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Node.js logger for Ongage services",
   "main": "app.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "Yury Fedorov",
   "private": true,
   "dependencies": {
+    "dotenv": "^4.0.0",
     "mkdirp": "^0.5.1",
     "node-env-file": "^0.1.8",
     "raven": "^2.1.2"

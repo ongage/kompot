@@ -2,6 +2,7 @@ const raven = require('raven');
 const packageJson = require('./package.json');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const SentryError = require('./SentryError');
 
 raven.config(process.env.SENTRY_URL, {
     release: packageJson.version
@@ -37,6 +38,16 @@ class Logger {
     }
 
     static log(message, isSentry = false, level = LEVEL_INFO, data = {}) {
+        if (typeof message === 'object' && message instanceof SentryError) {
+            isSentry = message.isReport();
+            level = [
+                SentryError.LEVEL_ERROR,
+                SentryError.LEVEL_WARNING,
+                SentryError.LEVEL_INFO
+            ].indexOf(message.getLevel())+1;
+            data = message.getExtraData();
+            message = message.getMessage();
+        }
         if (level > LOGGER_LEVEL) {
             return;
         }
@@ -65,5 +76,7 @@ class Logger {
         });
     }
 }
+
+Logger.SentryError = SentryError;
 
 module.exports = Logger;
