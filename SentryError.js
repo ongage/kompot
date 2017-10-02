@@ -21,7 +21,7 @@ class SentryError extends Error {
      * @param {string} level
      * @param {boolean} is_report
      */
-    constructor(message, level = SentryError.LEVEL_ERROR, extra = {}, is_report = true) {
+    constructor(message, extra = {}, level = SentryError.LEVEL_ERROR, is_report = true) {
         super(message);
         Error.captureStackTrace(this, SentryError);
 
