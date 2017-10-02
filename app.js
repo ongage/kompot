@@ -3,6 +3,7 @@ const packageJson = require('./package.json');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const SentryError = require('./SentryError');
+const deepExtend = require('deep-extend');
 
 raven.config(process.env.SENTRY_URL, {
     release: packageJson.version
@@ -37,16 +38,31 @@ class Logger {
         return LEVEL_INFO;
     }
 
-    static log(message, isSentry = false, level = LEVEL_INFO, data = {}) {
-        if (typeof message === 'object' && message instanceof SentryError) {
-            isSentry = message.isReport();
-            level = [
-                SentryError.LEVEL_ERROR,
-                SentryError.LEVEL_WARNING,
-                SentryError.LEVEL_INFO
-            ].indexOf(message.getLevel())+1;
-            data = message.getExtraData();
-            message = message.getMessage();
+    static log(message, isSentry = null, level = null, data = {}) {
+        if (typeof message === 'object') {
+            switch ( true )
+            {
+                case message instanceof SentryError:
+                    isSentry = isSentry !== null ? isSentry : message.isReport();
+                    level = level !== null ? level : ([
+                        SentryError.LEVEL_ERROR(),
+                        SentryError.LEVEL_WARNING(),
+                        SentryError.LEVEL_INFO()
+                    ].indexOf(message.getLevel()) + 1);
+                    deepExtend(data, message.getExtraData());
+                    message = message.getMessage();
+                    break;
+
+                case message instanceof Error:
+                    message = message.message();
+                    break;
+
+                default:
+                    message = message.toString();
+            }
+        } else {
+            isSentry = isSentry || false;
+            level = level || LEVEL_INFO;
         }
         if (level > LOGGER_LEVEL) {
             return;

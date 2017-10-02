@@ -1,18 +1,24 @@
+
+// Constants
+const LEVEL_ERROR   = 'error';
+const LEVEL_WARNING = 'warning';
+const LEVEL_INFO    = 'info';
+
 /**
  * Class that represents a Sentry error.
  */
 class SentryError extends Error {
 
     static LEVEL_ERROR() {
-        return 'error';
-    };
+        return LEVEL_ERROR;
+    }
 
     static LEVEL_WARNING() {
-        return 'warning';
+        return LEVEL_WARNING;
     }
 
     static LEVEL_INFO() {
-        return 'info';
+        return LEVEL_INFO;
     }
 
     /**
@@ -21,7 +27,7 @@ class SentryError extends Error {
      * @param {string} level
      * @param {boolean} is_report
      */
-    constructor(message, extra = {}, level = SentryError.LEVEL_ERROR, is_report = true) {
+    constructor(message, extra = {}, level = LEVEL_ERROR, is_report = true) {
         super(message);
         Error.captureStackTrace(this, SentryError);
 
@@ -67,7 +73,8 @@ class SentryError extends Error {
      * @param {string} level
      */
     setLevel(level) {
-        if ([SentryError.LEVEL_ERROR, SentryError.LEVEL_INFO, SentryError.LEVEL_WARNING].find(a => level === a)) {
+        level = typeof level === 'function' ? level() : level;
+        if ([LEVEL_ERROR, LEVEL_INFO, LEVEL_WARNING].find(a => level === a)) {
             this.level = level+'';
         } else {
             throw new Error(`Reporting level can be only SentryError.LEVEL_ERROR, SentryError.LEVEL_INFO or SentryError.LEVEL_WARNING. Provided '${level}'.`);

@@ -13,6 +13,7 @@
   "author": "Yury Fedorov",
   "private": true,
   "dependencies": {
+    "deep-extend": "^0.5.0",
     "dotenv": "^4.0.0",
     "mkdirp": "^0.5.1",
     "node-env-file": "^0.1.8",
