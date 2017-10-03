@@ -74,7 +74,7 @@ class SentryError extends Error {
      */
     setLevel(level) {
         level = typeof level === 'function' ? level() : level;
-        if ([LEVEL_ERROR, LEVEL_INFO, LEVEL_WARNING].find(a => level === a)) {
+        if ([LEVEL_ERROR, LEVEL_INFO, LEVEL_WARNING].includes(level)) {
             this.level = level+'';
         } else {
             throw new Error(`Reporting level can be only SentryError.LEVEL_ERROR, SentryError.LEVEL_INFO or SentryError.LEVEL_WARNING. Provided '${level}'.`);
